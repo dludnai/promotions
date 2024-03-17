@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: client1-apps
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: 'https://github.com/dludnai/promotions.git'
+        revision: HEAD
+        directories:
+          - path: stages/*
+  template:
+    metadata:
+      name: '{{path.basename}}-application'
+    spec:
+      project: default
+      source:
+        repoURL: 'https://github.com/dludnai/promotions.git'
+        targetRevision: HEAD
+        path: '{{path}}'
+      destination:
+        server: 'https://kubernetes.default.svc'
+        namespace: '{{path.basename}}'
+      syncPolicy:
+        automated: { prune: true, selfHeal: true }
