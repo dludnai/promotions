@@ -7,7 +7,7 @@ spec:
   template:
     spec:
       containers:
-      - name: payment
+      - name: ordering
         image: nginx:1.19 # Staging-specific nginx version
       volumes:
         - name: content
