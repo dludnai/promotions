@@ -1,0 +1,4 @@
+resources:
+  - ordering/ordering-application.yaml
+  - payment/payment-application.yaml
+  - profile/profile-application.yaml
