@@ -12,7 +12,7 @@ patches:
 - patch: |-
     - op: replace
       path: /spec/ports/0/nodePort
-      value: 30083
+      value: 30084
   target:
     kind: Service
     name: payment

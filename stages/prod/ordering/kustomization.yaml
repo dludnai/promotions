@@ -12,7 +12,7 @@ patches:
 - patch: |-
     - op: replace
       path: /spec/ports/0/nodePort
-      value: 30084
+      value: 30083
   target:
     kind: Service
     name: ordering
