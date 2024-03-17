@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: 'https://github.com/dludnai/promotions.git'
     targetRevision: HEAD
-    path: base/ordering
+    path: stages/staging/ordering
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: staging
