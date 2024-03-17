@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prod-ordering
+data:
+  index.html: |-
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <title>ordering</title>
+    </head>
+    <body>
+
+    <h1>ordering</h1>
+
+    </body>
+    </html>

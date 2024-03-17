@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ordering
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+      - name: ordering
+        image: nginx:1.18
+      volumes:
+        - name: content
+          configMap:
+            name: prod-ordering 

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prod-payment
+data:
+  index.html: |-
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <title>payment</title>
+    </head>
+    <body>
+
+    <h1>payment</h1>
+
+    </body>
+    </html>

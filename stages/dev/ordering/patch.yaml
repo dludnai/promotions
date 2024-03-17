@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ordering
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: ordering
+        image: nginx:1.20 # Dev-specific nginx version
+      volumes:
+        - name: content
+          configMap:
+            name: dev-ordering 
