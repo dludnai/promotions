@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: 'https://github.com/dludnai/promotions.git'
     targetRevision: HEAD
-    path: base/payment
+    path: stages/prod/payment
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: prod
