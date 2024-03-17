@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: payment
+        image: nginx:1.20 
+      volumes:
+        - name: content
+          configMap:
+            name: dev-payment  

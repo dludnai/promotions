@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: staging-ordering
+data:
+  index.html: |-
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <title>staging-ordering</title>
+    </head>
+    <body>
+
+    <h1>staging-ordering</h1>
+
+    </body>
+    </html>

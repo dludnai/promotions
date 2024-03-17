@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: staging-profile
+data:
+  index.html: |-
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <title>staging-profile</title>
+    </head>
+    <body>
+
+    <h1>staging-profile</h1>
+
+    </body>
+    </html>

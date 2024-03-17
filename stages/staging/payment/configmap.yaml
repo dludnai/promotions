@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: staging-payment
+data:
+  index.html: |-
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <title>staging-payment</title>
+    </head>
+    <body>
+
+    <h1>staging-payment</h1>
+
+    </body>
+    </html>

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dev-ordering
+data:
+  index.html: |-
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <title>dev-ordering</title>
+    </head>
+    <body>
+
+    <h1>dev-ordering</h1>
+
+    </body>
+    </html>

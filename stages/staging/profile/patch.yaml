@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: profile
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+      - name: profile
+        image: nginx:1.19
+      volumes:
+        - name: content
+          configMap:
+            name: staging-profile

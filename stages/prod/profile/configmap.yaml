@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prod-profile
+data:
+  index.html: |-
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <title>profile</title>
+    </head>
+    <body>
+
+    <h1>profile</h1>
+
+    </body>
+    </html>
