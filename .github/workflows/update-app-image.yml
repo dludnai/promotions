@@ -1,0 +1,25 @@
+name: Update Nginx Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Nginx version to use'
+        required: true
+        default: 'latest'
+
+jobs:
+  update-deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Update Nginx version in deployment
+        run: |
+          sed -i "s|image: nginx:.*|image: nginx:${{ github.event.inputs.version }}|" base/ordering/deployment.yaml
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add base/ordering/deployment.yaml
+          git commit -m "Update Nginx version to ${{ github.event.inputs.version }}"
+          git push
