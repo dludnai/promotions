@@ -17,7 +17,7 @@ jobs:
       
       - name: Update Nginx version in deployment
         run: |
-          sed -i "s|image: nginx:.*|image: nginx:${{ github.event.inputs.version }}|" base/ordering/deployment.yaml
+          sed -i "s|image: nginx:.*|image: nginx:${{ github.event.inputs.version }}|" stages/dev/ordering/patch.yaml
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git add base/ordering/deployment.yaml
