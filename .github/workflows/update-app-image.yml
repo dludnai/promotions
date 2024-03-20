@@ -14,12 +14,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
-      - name: Update Nginx version in deployment
+
+      - name: Configure Git
         run: |
-          sed -i "s|image: nginx:.*|image: nginx:${{ github.event.inputs.version }}|" stages/dev/ordering/patch.yaml
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add base/ordering/deployment.yaml
-          git commit -m "Update Nginx version to ${{ github.event.inputs.version }}"
+      
+      - name: Pull latest changes
+        run: git pull origin main
+      
+      - name: Update Nginx version and push changes
+        run: |
+          sed -i "s|image: nginx:.*|image: nginx:${{ github.event.inputs.version }}|" stages/dev/ordering/patch.yaml
+          git add stages/dev/ordering/patch.yaml
+          git commit -m "Update Nginx version to ${{ github.event.inputs.version }} in dev"
           git push
