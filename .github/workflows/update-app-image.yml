@@ -1,31 +1,98 @@
-name: Update Nginx Version
+name: Update App Version
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Nginx version to use'
+        description: 'Version to use, defaults to latest if not set'
         required: true
         default: 'latest'
 
 jobs:
-  update-deployment:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Configure Git
+      
+      - name: Setup Git
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-      
-      - name: Pull latest changes
-        run: git pull origin main
-      
-      - name: Update Nginx version and push changes
+          
+      - name: Build
         run: |
+          echo "Building version ${{ github.event.inputs.version }}."
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test
+        run: |
+          echo "Testing version ${{ github.event.inputs.version }}."
+
+  push_image:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Push Image
+        run: |
+          echo "Pushing image version ${{ github.event.inputs.version }}."
+
+  release_dev:
+    needs: push_image
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: Release dev
+        run: |
+          echo "Releasing version ${{ github.event.inputs.version }} to development environment. Simulated release process."
           sed -i "s|image: nginx:.*|image: nginx:${{ github.event.inputs.version }}|" stages/dev/ordering/patch.yaml
           git add stages/dev/ordering/patch.yaml
-          git commit -m "Update Nginx version to ${{ github.event.inputs.version }} in dev"
+          git commit -m "Update Nginx version to ${{ github.event.inputs.version }} for development"
+          git pull --rebase
           git push
+
+  pre_stage_quality_gate:
+    needs: release_dev
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run some quality gate after dev deployment
+        run: echo "Quality gate for staging passed. Simulated quality gate process."
+
+  release_stage:
+    needs: pre_stage_quality_gate
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Release stage
+        run: |
+          echo "Releasing version ${{ github.event.inputs.version }} to staging environment. Simulated release process."
+          sed -i "s|image: nginx:.*|image: nginx:${{ github.event.inputs.version }}|" stages/staging/ordering/patch.yaml
+          git add stages/staging/ordering/patch.yaml
+          git commit -m "Update Nginx version to ${{ github.event.inputs.version }} for staging"
+          git pull --rebase
+          git push
+
+  pre_prod_quality_gate:
+    needs: release_stage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run some quality gate after stage deployment
+        run: echo "Quality gate for production passed."
+
+  release_prod:
+    needs: pre_prod_quality_gate
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+      - name: Release prod
+        run: |
+          echo "Releasing version ${{ github.event.inputs.version }} to production environment. Simulated release process."
+          sed -i "s|image: nginx:.*|image: nginx:${{ github.event.inputs.version }}|" stages/prod/ordering/patch.yaml
+          git stages/prod/ordering/patch.yaml
+          git commit -m "Update Nginx version to ${{ github.event.inputs.version }} for production"
+          git pull --rebase
+          git push
+          
