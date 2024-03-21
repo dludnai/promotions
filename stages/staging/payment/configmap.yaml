@@ -8,6 +8,7 @@ data:
     <html>
     <head>
     <title>staging-payment</title>
+    <h2>Nginx Version: nginx-version-placeholder</h2>
     </head>
     <body>
 
