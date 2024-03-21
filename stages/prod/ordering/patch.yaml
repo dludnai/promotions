@@ -7,9 +7,11 @@ spec:
   template:
     spec:
       containers:
-      - name: ordering
-        image: nginx:1.20.0
+        - name: ordering
+          image: nginx:1.20.0
       volumes:
         - name: content
           configMap:
-            name: prod-ordering 
+            name: prod-ordering
+      securityContext:
+        runAsUser: 1000
