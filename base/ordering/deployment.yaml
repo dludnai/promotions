@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: ordering
-        image: nginx:latest # Base on nginx
+        image: nginx:1.19.3
         volumeMounts:
         - name: content
           mountPath: /usr/share/nginx/html
