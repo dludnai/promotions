@@ -1,0 +1,18 @@
+name: Rollback Deployment Manifests
+
+on:
+  workflow_dispatch:
+    # Allow manual trigger of rollback
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Revert to Previous Good Commit
+        run: |
+          git revert --no-commit HEAD~1..HEAD
+          git commit -m "Reverting to previous stable state"
+          git push
