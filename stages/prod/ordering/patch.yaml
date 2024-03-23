@@ -13,5 +13,5 @@ spec:
         - name: content
           configMap:
             name: prod-ordering
-      securityContext:
-        runAsUser: 1000
+
+

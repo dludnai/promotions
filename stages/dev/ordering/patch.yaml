@@ -13,5 +13,3 @@ spec:
         - name: content
           configMap:
             name: dev-ordering
-      securityContext:
-        runAsUser: 1000
