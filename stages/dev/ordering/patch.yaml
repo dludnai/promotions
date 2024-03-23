@@ -7,9 +7,9 @@ spec:
   template:
     spec:
       containers:
-      - name: ordering
-        image: nginx:1.19.3
+        - name: ordering
+          image: nginx:1.20.0
       volumes:
         - name: content
           configMap:
-            name: dev-ordering 
+            name: dev-ordering
