@@ -13,6 +13,5 @@ jobs:
 
       - name: Revert to Previous Good Commit
         run: |
-          git revert --no-commit HEAD~1..HEAD
-          git commit -m "Reverting to previous stable state"
-          git push
+          git revert --no-edit HEAD
+          git push origin HEAD
