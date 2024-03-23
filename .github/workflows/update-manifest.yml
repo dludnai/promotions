@@ -3,10 +3,10 @@ name: Update Manifests
 on:
   workflow_dispatch:
     inputs:
-      runAsUser:
-        description: 'User ID for the security context'
+      memoryLimit:
+        description: 'Memory limit for the container'
         required: true
-        default: '1000'
+        default: '512Mi'
 
 jobs:
   release_dev:
@@ -24,16 +24,17 @@ jobs:
         run: |
           sudo wget https://github.com/mikefarah/yq/releases/download/v4.6.1/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
 
-      - name: Add Security Context in Dev Environment
+      - name: Update Memory Limit in Dev Environment
         run: |
-          yq e ".spec.template.spec.securityContext = {\"runAsUser\": ${{ github.event.inputs.runAsUser }}}" -i stages/dev/ordering/patch.yaml
+          yq e ".spec.template.spec.containers[0].resources.limits.memory = \"${{ github.event.inputs.memoryLimit }}\"" -i stages/dev/ordering/patch.yaml
           git add stages/dev/ordering/patch.yaml
-          git commit -m "Add Security Context to Dev Env" || echo "No changes to commit in Dev Env"
+          git commit -m "Update Memory Limit to Dev Env" || echo "No changes to commit in Dev Env"
           git pull --rebase
           git push
 
   release_stage:
     runs-on: ubuntu-latest
+    needs: release_dev
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -47,16 +48,17 @@ jobs:
         run: |
           sudo wget https://github.com/mikefarah/yq/releases/download/v4.6.1/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
 
-      - name: Update Security Context in Staging Environment
+      - name: Update Memory Limit in Staging Environment
         run: |
-          yq e ".spec.template.spec.securityContext = {\"runAsUser\": ${{ github.event.inputs.runAsUser }}}" -i stages/staging/ordering/patch.yaml
+          yq e ".spec.template.spec.containers[0].resources.limits.memory = \"${{ github.event.inputs.memoryLimit }}\"" -i stages/staging/ordering/patch.yaml
           git add stages/staging/ordering/patch.yaml
-          git commit -m "Add Security Context in Staging Env" || echo "No changes to commit in Staging Env"
+          git commit -m "Update Memory Limit in Staging Env" || echo "No changes to commit in Staging Env"
           git pull --rebase
           git push
 
-  update-prod-security-context:
+  release_prod:
     runs-on: ubuntu-latest
+    needs: release_stage
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -70,9 +72,9 @@ jobs:
         run: |
           sudo wget https://github.com/mikefarah/yq/releases/download/v4.6.1/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
 
-      - name: Update Security Context in Prod Environment
+      - name: Update Memory Limit in Prod Environment
         run: |
-          yq e ".spec.template.spec.securityContext = {\"runAsUser\": ${{ github.event.inputs.runAsUser }}}" -i stages/prod/ordering/patch.yaml
+          yq e ".spec.template.spec.containers[0].resources.limits.memory = \"${{ github.event.inputs.memoryLimit }}\"" -i stages/prod/ordering/patch.yaml
           git add stages/prod/ordering/patch.yaml
           git commit -m "Add Security Context in Prod Env" || echo "No changes to commit in Prod Env"
           git pull --rebase
