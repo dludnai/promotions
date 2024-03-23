@@ -1,0 +1,79 @@
+name: Update Manifests
+
+on:
+  workflow_dispatch:
+    inputs:
+      runAsUser:
+        description: 'User ID for the security context'
+        required: true
+        default: '1000'
+
+jobs:
+  release_dev:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Git config
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+      - name: Install yq
+        run: |
+          sudo wget https://github.com/mikefarah/yq/releases/download/v4.6.1/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
+
+      - name: Add Security Context in Dev Environment
+        run: |
+          yq e ".spec.template.spec.securityContext = {\"runAsUser\": ${{ github.event.inputs.runAsUser }}}" -i stages/dev/ordering/patch.yaml
+          git add stages/dev/ordering/patch.yaml
+          git commit -m "Add Security Context to Dev Env" || echo "No changes to commit in Dev Env"
+          git pull --rebase
+          git push
+
+  release_stage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Git config
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"  
+
+      - name: Install yq
+        run: |
+          sudo wget https://github.com/mikefarah/yq/releases/download/v4.6.1/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
+
+      - name: Update Security Context in Staging Environment
+        run: |
+          yq e ".spec.template.spec.securityContext = {\"runAsUser\": ${{ github.event.inputs.runAsUser }}}" -i stages/staging/ordering/patch.yaml
+          git add stages/staging/ordering/patch.yaml
+          git commit -m "Add Security Context in Staging Env" || echo "No changes to commit in Staging Env"
+          git pull --rebase
+          git push
+
+  update-prod-security-context:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Git config
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"   
+
+      - name: Install yq
+        run: |
+          sudo wget https://github.com/mikefarah/yq/releases/download/v4.6.1/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
+
+      - name: Update Security Context in Prod Environment
+        run: |
+          yq e ".spec.template.spec.securityContext = {\"runAsUser\": ${{ github.event.inputs.runAsUser }}}" -i stages/prod/ordering/patch.yaml
+          git add stages/prod/ordering/patch.yaml
+          git commit -m "Add Security Context in Prod Env" || echo "No changes to commit in Prod Env"
+          git pull --rebase
+          git push

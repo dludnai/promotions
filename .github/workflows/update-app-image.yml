@@ -11,15 +11,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      
-      - name: Setup Git
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          
+    steps:          
       - name: Build
         run: |
           echo "Building version ${{ github.event.inputs.version }}."
@@ -45,13 +37,22 @@ jobs:
     runs-on: ubuntu-latest
     environment: dev
     steps:
+
       - name: Checkout code
         uses: actions/checkout@v2
+      
+      - name: Setup Git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com" 
+          
       - name: Release dev
         run: |
           echo "Releasing version ${{ github.event.inputs.version }} to development environment. Simulated release process."
           sed -i "s|image: nginx:.*|image: nginx:${{ github.event.inputs.version }}|" stages/dev/ordering/patch.yaml
+          sed -i "s|nginx-version-placeholder|${{ github.event.inputs.version }}|" stages/dev/ordering/configmap.yaml
           git add stages/dev/ordering/patch.yaml
+          git add stages/dev/ordering/configmap.yaml
           git commit -m "Update Nginx version to ${{ github.event.inputs.version }} for development"
           git pull --rebase
           git push
@@ -68,11 +69,21 @@ jobs:
     runs-on: ubuntu-latest
     environment: staging
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Setup Git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          
       - name: Release stage
         run: |
           echo "Releasing version ${{ github.event.inputs.version }} to staging environment. Simulated release process."
           sed -i "s|image: nginx:.*|image: nginx:${{ github.event.inputs.version }}|" stages/staging/ordering/patch.yaml
+          sed -i "s|nginx-version-placeholder|${{ github.event.inputs.version }}|" stages/staging/ordering/configmap.yaml
           git add stages/staging/ordering/patch.yaml
+          git add stages/staging/ordering/configmap.yaml
           git commit -m "Update Nginx version to ${{ github.event.inputs.version }} for staging"
           git pull --rebase
           git push
@@ -89,11 +100,21 @@ jobs:
     runs-on: ubuntu-latest
     environment: prod
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Setup Git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          
       - name: Release prod
         run: |
           echo "Releasing version ${{ github.event.inputs.version }} to production environment. Simulated release process."
           sed -i "s|image: nginx:.*|image: nginx:${{ github.event.inputs.version }}|" stages/prod/ordering/patch.yaml
-          git stages/prod/ordering/patch.yaml
+          sed -i "s|nginx-version-placeholder|${{ github.event.inputs.version }}|" stages/prod/ordering/configmap.yaml
+          git add stages/prod/ordering/patch.yaml
+          git add stages/prod/ordering/configmap.yaml
           git commit -m "Update Nginx version to ${{ github.event.inputs.version }} for production"
           git pull --rebase
           git push

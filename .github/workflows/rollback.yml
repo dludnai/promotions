@@ -1,0 +1,26 @@
+name: Rollback Deployment Manifests
+
+on:
+  workflow_dispatch:
+    # Allow manual trigger of rollback
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetches all history for finding commits
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+
+      - name: Revert to Previous Good State
+        run: |
+          # This finds the commit before the last commit and resets the HEAD to it.
+          LAST_GOOD_COMMIT=$(git rev-parse HEAD~1)
+          git reset --hard $LAST_GOOD_COMMIT
+          git push -f origin HEAD:main
