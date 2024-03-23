@@ -9,6 +9,9 @@ spec:
       containers:
         - name: ordering
           image: nginx:1.20.0
+          resources:
+            limits:
+              memory: 512Mi
       volumes:
         - name: content
           configMap:
